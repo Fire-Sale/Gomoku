@@ -49,12 +49,20 @@ void printChessboard()
 				printf("%3d", j);
 			else if (j == 0)
 				printf("%3d", i);
+			// else if (1 == chessboard[i][j])
+			// 	printf("  ○");
+			// else if (2 == chessboard[i][j])
+			// 	printf("  ●");
+			// else
+			// 	printf("   ");
+
 			else if (1 == chessboard[i][j])
-				printf("  ○");
-			else if (2 == chessboard[i][j])
-				printf("  ●");
-			else
-				printf("   ");
+                printf("  X");
+            else if (2 == chessboard[i][j])
+                printf("  O");
+            else
+                printf("  *");
+
 		}
 		printf("\n");
 
@@ -144,7 +152,7 @@ void EvaluateScore()
 					int humanNum = 0;
 					int AINum = 0;
 					int emptyNum = 0;
-					for(int step = -4;step <= 4;++step)
+					for(int step = -1;step <= 4;++step)
 					{
 						int curX = i+step*dirx[k];
 						int curY = j+step*diry[k];
@@ -157,7 +165,7 @@ void EvaluateScore()
 						}
 					
 					if(humanNum == 1)                      // 杀二
-							score[i][j] += 100;
+							score[i][j] += 10;
 						else if (humanNum == 2)                 // 杀三
 						{
 								if (emptyNum == 1)
@@ -167,14 +175,14 @@ void EvaluateScore()
 						}
 						else if (humanNum == 3)                 // 杀四
 						{
-							// 量变空位不一样，优先级不一样
 							if (emptyNum == 1)
-								score[i][j] += 60;
+								score[i][j] += 600;
 							else if (emptyNum == 2)
-								score[i][j] += 110;
+								score[i][j] += 1100;
 						}
 						else if (humanNum == 4)                 // 杀五
 							score[i][j] += 10100;
+
 
 						if (AINum == 0)                      // 普通下子
 							score[i][j] += 5;
@@ -186,7 +194,7 @@ void EvaluateScore()
 								score[i][j] += 25;
 							else if (emptyNum == 2)
 								//score[i][j] += 50;  // 活三
-								score[i][j] += 5000;  // 活三
+								score[i][j] += 50;  // 活三
 						}
 						else if (AINum == 3)
 						{
@@ -194,7 +202,7 @@ void EvaluateScore()
 								score[i][j] += 55;
 							else if (emptyNum == 2)
 								//score[i][j] += 100; // 活四
-								score[i][j] += 11000; // 活四
+								score[i][j] += 100; // 活四
 						}
 						else if (AINum >= 4)
 							score[i][j] += 10000;   // 活五
