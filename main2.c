@@ -3,14 +3,14 @@
 #include <string.h>
 
 #define N	15
-#define DEPTH 6
+#define DEPTH 2
 
-int chessboard[N + 1][N + 1] = { 0 };
-int dirx[9]={0,0,1,0,-1,1,1,-1,-1};
-int diry[9]={0,1,0,-1,0,1,-1,-1,1};
-int score[N+1][N+1]={};
-int human[10]={},AI[10]={},empty[10]={};
-int past[10]={};
+int chessboard[N+1][N+1] = {};
+int score[N+1][N+1] = {};
+int dirx[9] = {0,0,1,0,-1,1,1,-1,-1};
+int diry[9] = {0,1,0,-1,0,1,-1,-1,1};
+int human[10] = {}, AI[10] = {}, empty[10] = {};
+int past[10] = {};
 int whoseTurn = 0, OptX, OptY;
 int tot = 0;
 void initGame();
@@ -30,7 +30,7 @@ int main()
 	scanf("%d", &whoseTurn);
 	if(whoseTurn == 1) whoseTurn -=1 ;
 	else if(whoseTurn == 2) whoseTurn -=3;
-	else printf("Wrong mode. Enter Crtl+C to exit.");
+	else printf("Wrong mode. Enter Crtl+C to exit and run the program again.");
 	while (1)
 	{
 		whoseTurn++;
@@ -49,9 +49,9 @@ void initGame()
 void printChessboard()
 {
 	int i, j;
-	for (i = 0; i <= N; i++)
+	for(i=0;i<=N;i++)
 	{
-		for (j = 0; j <= N; j++)
+		for(j=0;j<=N;j++)
 		{
 			if (0 == i)
 				printf("%4d", j);
@@ -63,12 +63,11 @@ void printChessboard()
 				printf("   ○");
 			else
 				printf("   .");
-
 		}
 		printf("\n");
 		printf("\n");
 	}
-	printf("%d\n", tot);
+	//printf("%d\n", tot);
 }
 
 void playChess()
@@ -88,7 +87,7 @@ void playChess()
 		}
 		while(chessboard[i][j] != 0)
 		{
-			printf("your position is taken,choose another:"); 
+			printf("Your position is taken, please choose another one:"); 
 			scanf("%d %d", &i, &j);
 		}
 		chessboard[i][j] = 1;
@@ -137,17 +136,6 @@ int MAX_MIN(int deep)
 	for(int i=2;i<=N-1;i++)
 		for(int j=2;j<=N-1;j++)
 		{
-			// if(chessboard[i+1][j] != 0)  pos[++numPos] = (i+1)*(N+1)+j;
-			// if(chessboard[i+1][j+1] != 0)  pos[++numPos] = (i+1)*(N+1)+j+1;
-			// if(chessboard[i+1][j-1] != 0)  pos[++numPos] = (i+1)*(N+1)+j-1;
-
-			// if(chessboard[i][j+1] != 0)  pos[++numPos] = (i)*(N+1)+j+1;
-			// if(chessboard[i][j-1] != 0)  pos[++numPos] = (i)*(N+1)+j-1;
-
-			// if(chessboard[i-1][j] != 0)  pos[++numPos] = (i-1)*(N+1)+j;
-			// if(chessboard[i-1][j+1] != 0)  pos[++numPos] = (i-1)*(N+1)+j+1;
-			// if(chessboard[i-1][j-1] != 0)  pos[++numPos] = (i-1)*(N+1)+j-1;
-
 			if(chessboard[i+1][j] != 0 || chessboard[i-1][j] != 0 || chessboard[i][j+1] != 0 || chessboard[i][j-1] != 0 || 
 			   chessboard[i+1][j+1] != 0 || chessboard[i+1][j-1] != 0 || chessboard[i-1][j+1] != 0 || chessboard[i-1][j-1] != 0)
 				pos[++numPos] = i*(N+1)+j;
@@ -176,7 +164,7 @@ int MIN(int deep, int x, int y, int alpha, int beta)
 {
 	int mark = EvaluateScore(x, y);
 	chessboard[x][y] = 2;
-	if(deep>=DEPTH || judge(x, y))
+	if(deep >= DEPTH || judge(x, y))
 		return mark;
 	tot++;
 	int best = 1e9;
@@ -205,7 +193,6 @@ int MIN(int deep, int x, int y, int alpha, int beta)
 		}
 		if(score < beta)
 		{
-			//cut++;
 			break;
 		}
 	}
@@ -216,7 +203,7 @@ int MAX(int deep, int x, int y, int alpha, int beta)
 {
 	int score = EvaluateScore(x, y);
 	chessboard[x][y] = 1;
-	if(deep>=DEPTH || judge(x,y))
+	if(deep >= DEPTH || judge(x,y))
 		return score;
 	tot++;
 	int best = -1e9;
@@ -245,7 +232,6 @@ int MAX(int deep, int x, int y, int alpha, int beta)
 		}
 		if(score > alpha)
 		{
-			//cut ++;
 			break;
 		}
 	}
@@ -276,40 +262,6 @@ int judge(int x, int y)
     }
 	return 0;
 }
-
-// int EvaluateScore(int x, int y)
-// {
-// 	for(int k=1;k<=8;k++)
-// 	{
-// 		int humanNum = 0;
-// 		int AINum = 0;
-// 		int emptyNum = 0;
-	
-// 		for(int step = -2;step <= 4;++step)
-// 		{
-// 			int curX = x+step*dirx[k];
-// 			int curY = y+step*diry[k];
-
-// 			if(curX>=1 && curX<=N && curY>=1 && curY<=N)
-// 			{
-// 				if(chessboard[curX][curY] == 0) empty[++emptyNum] = step;
-// 				if(chessboard[curX][curY] == 1) human[++humanNum] = step;
-// 				if(chessboard[curX][curY] == 2) AI[++AINum] = step;
-// 			}
-
-// 			if(curX>=1 && curX<=N && curY>=1 && curY<=N)
-// 			{
-// 				if(chessboard[curX][curY] == 0) empty[++emptyNum] = step;
-// 				if(chessboard[curX][curY] == 1) human[++humanNum] = step;
-// 				if(chessboard[curX][curY] == 2) AI[++AINum] = step;
-// 			}
-
-// 			if(humanNum == 5) score[x][y] += 101000;
-// 			if(humanNum == 4) score[x][y] += 101000;
-// 		}
-// 	}
-// 	return score[x][y];
-// }
 
 int EvaluateScore(int x, int y)
 {
@@ -349,10 +301,6 @@ int EvaluateScore(int x, int y)
 			}
 			else if (humanNum == 4)                 // 杀五
 				 mark += 10100;
-			// else if (humanNum == 5)                 // 杀五
-			// 	score[x][y] += 101000;
-
-
 
 			if (AINum == 0)                      // 普通下子
 				mark += 5;
@@ -363,7 +311,6 @@ int EvaluateScore(int x, int y)
 				if (emptyNum == 1)                // 死三
 					mark += 25;
 				else if (emptyNum == 2)
-					//score[x][y] += 50;  // 活三
 					mark += 50;  // 活三
 			}
 			else if (AINum == 3)
@@ -376,9 +323,42 @@ int EvaluateScore(int x, int y)
 			}
 			else if (AINum == 4)
 				mark += 10000;   // 活五
-			// else if (AINum == 5)
-			// 	score[x][y] += 100000;   // 活五
 		}
 	}
 	return mark;
 }
+
+
+// int EvaluateScore(int x, int y)
+// {
+// 	for(int k=1;k<=8;k++)
+// 	{
+// 		int humanNum = 0;
+// 		int AINum = 0;
+// 		int emptyNum = 0;
+	
+// 		for(int step = -2;step <= 4;++step)
+// 		{
+// 			int curX = x+step*dirx[k];
+// 			int curY = y+step*diry[k];
+
+// 			if(curX>=1 && curX<=N && curY>=1 && curY<=N)
+// 			{
+// 				if(chessboard[curX][curY] == 0) empty[++emptyNum] = step;
+// 				if(chessboard[curX][curY] == 1) human[++humanNum] = step;
+// 				if(chessboard[curX][curY] == 2) AI[++AINum] = step;
+// 			}
+
+// 			if(curX>=1 && curX<=N && curY>=1 && curY<=N)
+// 			{
+// 				if(chessboard[curX][curY] == 0) empty[++emptyNum] = step;
+// 				if(chessboard[curX][curY] == 1) human[++humanNum] = step;
+// 				if(chessboard[curX][curY] == 2) AI[++AINum] = step;
+// 			}
+
+// 			if(humanNum == 5) score[x][y] += 101000;
+// 			if(humanNum == 4) score[x][y] += 101000;
+// 		}
+// 	}
+// 	return score[x][y];
+// }
